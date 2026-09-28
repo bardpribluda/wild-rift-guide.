@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Эстриперский Сундук - Wild Rift Top Lane</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        hextech: {
+                            gold: '#C8AA6E',
+                            goldLight: '#F0E6D2',
+                            blue: '#0AC8B9',
+                            darkBlue: '#0397AB',
+                            bg: '#030811',
+                            card: '#0A1428',
+                            cardBorder: '#1E2328'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #030811;
+            color: #f0e6d2;
+            font-family: 'Inter', sans-serif;
+            background-image: 
+                radial-gradient(circle at 10% 15%, rgba(10, 200, 185, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 90% 85%, rgba(200, 170, 110, 0.07) 0%, transparent 45%);
+            background-attachment: fixed;
+        }
+        
+        .glass-panel {
+            background: rgba(10, 20, 40, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(200, 170, 110, 0.2);
+        }
+
+        .glass-panel-hover {
+            transition: all 0.25s ease;
+        }
+
+        .glass-panel-hover:hover {
+            border-color: rgba(200, 170, 110, 0.5);
+            box-shadow: 0 0 20px rgba(10, 200, 185, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #FFF0D0 0%, #C8AA6E 50%, #907038 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border-glow {
+            box-shadow: 0 0 15px rgba(200, 170, 110, 0.25);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060e1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e2836;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #c8aa6e;
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-12 antialiased selection:bg-amber-500/30 selection:text-amber-200">
+
+    <!-- Top Header Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-amber-500/20 px-4 py-3 mb-6 shadow-xl">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            
+            <!-- Brand Logo & Title -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-start">
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-teal-400 p-[1px] shadow-lg shadow-amber-500/20 shrink-0">
+                        <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                            <i class="fa-solid fa-box-archive text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="font-black text-xl md:text-2xl tracking-tight gold-gradient-text uppercase">ЭСТРИПЕРСКИЙ СУНДУК</h1>
+                        </div>
+                        <p class="text-xs text-amber-200/60 font-medium">Топ Лейн Контрпики & Матчап Справедливости</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Mobile View Trigger) -->
+                <div class="flex items-center gap-2 md:hidden">
+                    <button onclick="switchMainTab('single')" id="mobTabSingle" class="p-2 bg-amber-500/20 text-amber-300 rounded-lg text-xs font-bold border border-amber-500/40">
+                        <i class="fa-solid fa-user-ninja"></i>
+                    </button>
+                    <button onclick="switchMainTab('versus')" id="mobTabVersus" class="p-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold border border-slate-700">
+                        <i class="fa-solid fa-swords"></i> 1v1
+                    </button>
+                    <button onclick="switchMainTab('tierlist')" id="mobTabTier" class="p-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold border border-slate-700">
+                        <i class="fa-solid fa-list-ol"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- View Switcher Tabs (Desktop) -->
+            <div class="hidden md:flex items-center bg-slate-950/80 p-1 rounded-xl border border-amber-500/30">
+                <button onclick="switchMainTab('single')" id="tabBtnSingle" class="px-4 py-2 rounded-lg text-xs font-extrabold transition flex items-center gap-2 bg-amber-500 text-slate-950 shadow-md">
+                    <i class="fa-solid fa-crosshair"></i> Поиск контрпиков
+                </button>
+                <button onclick="switchMainTab('versus')" id="tabBtnVersus" class="px-4 py-2 rounded-lg text-xs font-extrabold transition flex items-center gap-2 text-slate-400 hover:text-amber-300">
+                    <i class="fa-solid fa-swords text-amber-400"></i> Симулятор 1v1
+                </button>
+                <button onclick="switchMainTab('tierlist')" id="tabBtnTier" class="px-4 py-2 rounded-lg text-xs font-extrabold transition flex items-center gap-2 text-slate-400 hover:text-teal-300">
+                    <i class="fa-solid fa-layer-group"></i> Полный Тир-Лист
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4">
+
+        <!-- ================================================================= -->
+        <!-- VIEW 1: SINGLE CHAMPION COUNTER ANALYZER (DEFAULT MAIN PAGE)     -->
+        <!-- ================================================================= -->
+        <section id="viewSingle" class="space-y-6">
+            
+            <!-- Champion Selector Bar -->
+            <div class="glass-panel rounded-2xl p-4 sm:p-6 border border-amber-500/30">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-shield-cat text-amber-400"></i> Выберите персонажа для анализа линии
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Показывает контрпики и самых опасных оппонентов для выбранного героя</p>
+                    </div>
+
+                    <div class="w-full md:w-80 relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-amber-400 text-sm"></i>
+                        <input type="text" id="singleChampSearch" oninput="filterChampionSelectDropdown()" placeholder="Быстрый поиск героя..." 
+                               class="w-full bg-slate-950 border border-amber-500/30 rounded-xl pl-9 pr-4 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-400 transition">
+                    </div>
+                </div>
+
+                <!-- Quick Selection Chips / Grid -->
+                <div class="mt-4 pt-4 border-t border-slate-800/80">
+                    <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">Выберите из списка Топ-лейнеров:</p>
+                    <div id="champChipList" class="flex flex-wrap gap-2 max-h-40 overflow-y-auto pr-1">
+                        <!-- Chips injected JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Selected Champion Counter Dashboard -->
+            <div id="selectedChampDashboard" class="hidden space-y-6">
+                
+                <!-- Main Champ Hero Card Header -->
+                <div id="heroCardBanner" class="glass-panel rounded-2xl p-6 border-2 border-amber-500/40 relative overflow-hidden">
+                    <!-- Dynamic details injected here -->
+                </div>
+
+                <!-- Counterpicks Container -->
+                <div class="max-w-4xl mx-auto w-full">
+                    
+                    <!-- COUNTERPICKS (DANGER) -->
+                    <div class="glass-panel rounded-2xl p-5 sm:p-6 border border-rose-500/30 bg-rose-950/10">
+                        <div class="flex items-center justify-between mb-4 border-b border-rose-500/20 pb-3">
+                            <div class="flex items-center gap-2 text-rose-400 font-extrabold text-base">
+                                <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                                <span>КОНТРПИКИ (Опасные оппоненты)</span>
+                            </div>
+                            <span id="weakCount" class="text-xs font-bold px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-300 border border-rose-500/30"></span>
+                        </div>
+                        <div id="weakAgainstList" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <!-- Injected JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Empty / Prompt State when no champ selected -->
+            <div id="singleEmptyPrompt" class="glass-panel rounded-2xl p-12 text-center flex flex-col items-center justify-center">
+                <div class="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-2xl mb-4">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                </div>
+                <h3 class="text-lg font-bold text-slate-200">Выберите персонажа выше</h3>
+                <p class="text-xs text-slate-400 mt-1 max-w-sm">Нажмите на любого чемпиона из верхней панели, чтобы мгновенно увидеть расклад контрпиков и тип урона.</p>
+            </div>
+
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 2: 1v1 MATCHUP COMPARATOR (VERSUS MODE)                     -->
+        <!-- ================================================================= -->
+        <section id="viewVersus" class="hidden space-y-6">
+            
+            <div class="glass-panel rounded-2xl p-6 border border-amber-500/30 text-center max-w-3xl mx-auto">
+                <h2 class="text-xl font-black gold-gradient-text flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-swords text-amber-400"></i> СИМУЛЯТОР МАТЧАПА 1v1
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Выберите своего героя и героя противника на Топ-линии, чтобы узнать вероятность победы</p>
+            </div>
+
+            <!-- 1v1 Selector Panel -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                
+                <!-- Player Champ Pick -->
+                <div class="lg:col-span-5 glass-panel rounded-2xl p-5 border border-teal-500/30">
+                    <label class="block text-xs font-extrabold text-teal-400 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-user-shield"></i> Ваш персонаж (Вы)
+                    </label>
+                    <select id="versusChamp1" onchange="calculateVersusMatchup()" class="w-full bg-slate-950 border border-teal-500/40 rounded-xl p-3 text-sm text-white font-bold focus:outline-none focus:border-teal-400">
+                        <option value="">-- Выберите вашего героя --</option>
+                    </select>
+
+                    <div id="versusPreview1" class="mt-4 p-4 rounded-xl bg-slate-950/70 border border-slate-800 hidden text-center">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+                <!-- VS Badge Divider -->
+                <div class="lg:col-span-2 flex flex-col items-center justify-center py-2">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center font-black text-slate-950 text-xl shadow-lg shadow-amber-500/20 border-2 border-slate-900">
+                        VS
+                    </div>
+                    <button onclick="swapVersusChamps()" class="mt-2 text-xs text-slate-400 hover:text-amber-300 flex items-center gap-1 transition">
+                        <i class="fa-solid fa-arrow-right-arrow-left"></i> Поменять
+                    </button>
+                </div>
+
+                <!-- Enemy Champ Pick -->
+                <div class="lg:col-span-5 glass-panel rounded-2xl p-5 border border-rose-500/30">
+                    <label class="block text-xs font-extrabold text-rose-400 uppercase tracking-wider mb-2">
+                        <i class="fa-solid fa-skull"></i> Вражеский персонаж (Оппонент)
+                    </label>
+                    <select id="versusChamp2" onchange="calculateVersusMatchup()" class="w-full bg-slate-950 border border-rose-500/40 rounded-xl p-3 text-sm text-white font-bold focus:outline-none focus:border-rose-400">
+                        <option value="">-- Выберите оппонента --</option>
+                    </select>
+
+                    <div id="versusPreview2" class="mt-4 p-4 rounded-xl bg-slate-950/70 border border-slate-800 hidden text-center">
+                        <!-- JS injected -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RESULT BANNER & DETAILED BREAKDOWN -->
+            <div id="versusResultBox" class="hidden glass-panel rounded-2xl p-6 sm:p-8 border-2 text-center transition-all">
+                <!-- Injected JS Result -->
+            </div>
+
+        </section>
+
+
+        <!-- ================================================================= -->
+        <!-- VIEW 3: FULL TIER LIST & SORTING                                  -->
+        <!-- ================================================================= -->
+        <section id="viewTierlist" class="hidden space-y-6">
+            
+            <!-- Controls Bar -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 glass-panel p-4 rounded-2xl border border-amber-500/30">
+                
+                <div class="flex flex-wrap items-center gap-4 w-full md:w-auto">
+                    <!-- Tier Filter Dropdown -->
+                    <div class="flex items-center gap-2">
+                        <label for="tierFilterOption" class="text-xs text-slate-400 font-bold flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-layer-group text-amber-400"></i> Категория:
+                        </label>
+                        <select id="tierFilterOption" onchange="renderTierList()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500 transition cursor-pointer">
+                            <option value="ALL">Все тиры (S+ → B)</option>
+                            <option value="S+ Tier">S+ Tier</option>
+                            <option value="S Tier">S Tier</option>
+                            <option value="A Tier">A Tier</option>
+                            <option value="B Tier">B Tier</option>
+                        </select>
+                    </div>
+
+                    <!-- Damage Filter Dropdown -->
+                    <div class="flex items-center gap-2">
+                        <label for="damageFilterOption" class="text-xs text-slate-400 font-bold flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-shield-halved text-amber-400"></i> Вид урона:
+                        </label>
+                        <select id="damageFilterOption" onchange="renderTierList()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500 transition cursor-pointer">
+                            <option value="ALL">Все типы урона</option>
+                            <option value="physical">Физический урон</option>
+                            <option value="magical">Магический урон</option>
+                            <option value="true">Чистый урон</option>
+                            <option value="mixed">Смешанный урон</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sort Order Dropdown -->
+                <div class="flex items-center gap-2 w-full md:w-auto justify-start md:justify-end">
+                    <label for="tierSortOption" class="text-xs text-slate-400 font-bold flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-sort text-amber-400"></i> Сортировка:
+                    </label>
+                    <select id="tierSortOption" onchange="renderTierList()" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs font-bold text-slate-200 focus:outline-none focus:border-amber-500 transition cursor-pointer">
+                        <option value="tier">По Тиру (S+ → B)</option>
+                        <option value="name">По имени (А-Я)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Tier Containers Container -->
+            <div id="tierListContainer" class="space-y-6">
+                <!-- JS populated tier blocks -->
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Detailed Champion Modal -->
+    <div id="detailModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-950 border border-amber-500/30 w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col my-auto relative">
+            
+            <!-- Modal Header -->
+            <div class="relative bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 p-4 sm:p-6 border-b border-slate-800 flex justify-between items-start shrink-0">
+                <div class="flex items-center gap-4">
+                    <img id="detailAvatar" src="" alt="" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-amber-500/60 object-cover shadow-lg shadow-amber-500/10">
+                    <div>
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <h2 id="detailName" class="text-2xl sm:text-3xl font-black text-white tracking-wide"></h2>
+                            <span id="detailTier" class="px-2.5 py-0.5 rounded-md text-xs font-extrabold bg-teal-500/20 text-teal-300 border border-teal-500/30"></span>
+                            <div id="detailDamageBadge" class="flex flex-wrap gap-1.5 items-center"></div>
+                        </div>
+                        <p id="detailTitle" class="text-xs sm:text-sm text-slate-400 mt-1 italic"></p>
+                    </div>
+                </div>
+
+                <button onclick="closeDetailModal()" class="p-2 bg-slate-800/80 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 rounded-xl transition border border-slate-700/60 text-xs sm:text-sm">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-6">
+                
+                <!-- Counter Picks Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Strong Against -->
+                    <div class="bg-slate-900/80 border border-emerald-500/20 rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-emerald-400 font-bold text-sm mb-3">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>СИЛЕН ПРОТИВ (Контрит):</span>
+                        </div>
+                        <div id="detailStrongAgainst" class="flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <!-- Weak Against -->
+                    <div class="bg-slate-900/80 border border-rose-500/20 rounded-xl p-4">
+                        <div class="flex items-center gap-2 text-rose-400 font-bold text-sm mb-3">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <span>СЛАБ ПРОТИВ (Опасные враги):</span>
+                        </div>
+                        <div id="detailWeakAgainst" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+                <!-- Runes Section -->
+                <div class="bg-slate-900/80 border border-amber-500/20 rounded-xl p-4">
+                    <h3 class="text-amber-400 font-bold text-sm mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-gem text-amber-400"></i> Руны & Спеллы
+                    </h3>
+                    <div id="detailRunesContainer" class="grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+                </div>
+
+                <!-- Item Builds Section -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 class="text-amber-400 font-bold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-shield-cat text-teal-400"></i> Сборка предметов
+                        </h3>
+                    </div>
+                    <div id="buildItemsDisplay" class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const INITIAL_CHAMPIONS = [
+            {
+                id: "akali",
+                name: "Акали",
+                enName: "Akali",
+                title: "Свободный убийца",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Akali.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Казнь электричеством", primary: "Доминирование", secondary: "Храбрость" },
+                builds: [{ name: "Магический Ассасин", items: ["Творец ночного жнеца", "Сфера бесконечности", "Шляпа Рабадона", "Посох Бездна", "Песочные часы Жоньей"] }]
+            },
+            {
+                id: "ambessa",
+                name: "Амбесса",
+                enName: "Ambessa",
+                title: "Военачальник Ноксуса",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Ambessa.png",
+                strongAgainst: ["Мордекайзер"],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Дуэлянт / Брузер", items: ["Черная секира", "Расколотая небесная твердь", "Танец смерти", "Испытание Стерака", "Ангел-хранитель"] }]
+            },
+            {
+                id: "aatrox",
+                name: "Атрокс",
+                enName: "Aatrox",
+                title: "Клинок Даркинов",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Aatrox.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Стандарт / АоЕ Урон", items: ["Черная секира", "Расколотая небесная твердь", "Танец смерти", "Испытание Стерака", "Облачение духов"] }]
+            },
+            {
+                id: "warwick",
+                name: "Варвик",
+                enName: "Warwick",
+                title: "Заунский гнев",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Warwick.png",
+                strongAgainst: ["Мордекайзер"],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Брузер Лайнер", items: ["Божественный сокрушитель", "Титаническая гидра", "Испытание Стерака", "Завеса Банши", "Шипованный доспех"] }]
+            },
+            {
+                id: "vayne",
+                name: "Вейн",
+                enName: "Vayne",
+                title: "Ночной охотник",
+                role: "TOP",
+                tier: "S+ Tier",
+                damageType: "true",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Vayne.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Вдохновение" },
+                builds: [{ name: "Рейндж Крит / Танкоборец", items: ["Убийца кракенов", "Клинок Падшего короля", "Заколдованный клинок", "Арбалет бессмертия", "Ангел-хранитель"] }]
+            },
+            {
+                id: "vladimir",
+                name: "Владимир",
+                enName: "Vladimir",
+                title: "Алый аристократ",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Vladimir.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Фазовый рывок", primary: "Доминирование", secondary: "Вдохновение" },
+                builds: [{ name: "Лейт-гейм Маг", items: ["Ночной жнец", "Шляпа Рабадона", "Посох Бездна", "Песочные часы Жоньей", "Космический драйв"] }]
+            },
+            {
+                id: "volibear",
+                name: "Волибир",
+                enName: "Volibear",
+                title: "Неукротимый шторм",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Volibear.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Точность" },
+                builds: [{ name: "Гибридный Танк", items: ["Титаническая гидра", "Творец сущности", "Стальное сердце", "Облачение духов", "Шипованный доспех"] }]
+            },
+            {
+                id: "wukong",
+                name: "Вуконг",
+                enName: "Wukong",
+                title: "Обезьяний король",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/MonkeyKing.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Командный Инициатор", items: ["Сокрушитель", "Черная секира", "Танец смерти", "Испытание Стерака", "Ангел-хранитель"] }]
+            },
+            {
+                id: "garen",
+                name: "Гарен",
+                enName: "Garen",
+                title: "Мощь Демасии",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Garen.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Фазовый рывок", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Джаггернаут", items: ["Тройственный союз", "Испытание Стерака", "Броня мертвеца", "Сила природы", "Ангел-хранитель"] }]
+            },
+            {
+                id: "gwen",
+                name: "Гвен",
+                enName: "Gwen",
+                title: "Швея-святоша",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "magical",
+                damageComponents: ["magical", "true"],
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Gwen.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "AP Танкоборец", items: ["Творец разлома", "Зуб Нашора", "Шляпа Рабадона", "Мучения Лиандри", "Песочные часы Жоньей"] }]
+            },
+            {
+                id: "gnar",
+                name: "Гнар",
+                enName: "Gnar",
+                title: "Недостающее звено",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Gnar.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Искусное маневрирование", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Кайтер / Мега-Танк", items: ["Тройственный союз", "Черная секира", "Броня мертвеца", "Испытание Стерака", "Сила природы"] }]
+            },
+            {
+                id: "gragas",
+                name: "Грагас",
+                enName: "Gragas",
+                title: "Дебошир",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Gragas.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Фазовый рывок", primary: "Доминирование", secondary: "Вдохновение" },
+                builds: [{ name: "AP Контроль / Бурст", items: ["Эхо Людена", "Шляпа Рабадона", "Песочные часы Жоньей", "Посох Бездна", "Космический драйв"] }]
+            },
+            {
+                id: "graves",
+                name: "Грейвз",
+                enName: "Graves",
+                title: "Убийца",
+                role: "TOP",
+                tier: "B Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Graves.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Доминирование" },
+                builds: [{ name: "Крит Брузер", items: ["Арбалет бессмертия", "Черная секира", "Заколдованный клинок", "Грань бесконечности", "Ангел-хранитель"] }]
+            },
+            {
+                id: "darius",
+                name: "Дариус",
+                enName: "Darius",
+                title: "Рука Ноксуса",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Darius.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Брузер Кровопийца", items: ["Тройственный союз", "Испытание Стерака", "Броня мертвеца", "Облачение духов", "Ангел-хранитель"] }]
+            },
+            {
+                id: "jax",
+                name: "Джакс",
+                enName: "Jax",
+                title: "Виртуоз оружия",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Jax.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Сплит-пушер", items: ["Тройственный союз", "Клинок Падшего короля", "Испытание Стерака", "Танец смерти", "Ангел-хранитель"] }]
+            },
+            {
+                id: "jayce",
+                name: "Джейс",
+                enName: "Jayce",
+                title: "Защитник завтрашнего дня",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Jayce.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Удар током", primary: "Доминирование", secondary: "Вдохновение" },
+                builds: [{ name: "Поук / Смертоносность", items: ["Манамунэ", "Призрачный клинок Юумуу", "Змеиный клык", "Черная секира", "Злобоглаз"] }]
+            },
+            {
+                id: "dr_mundo",
+                name: "Доктор Мундо",
+                enName: "Dr. Mundo",
+                title: "Заунский безумец",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/DrMundo.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Неубиваемый Танк", items: ["Стальное сердце", "Облачение духов", "Шипованный доспех", "Броня мертвеца", "Вестник ранней зимы"] }]
+            },
+            {
+                id: "irelia",
+                name: "Ирелия",
+                enName: "Irelia",
+                title: "Танцующая с клинками",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Irelia.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Дуэлянт", items: ["Клинок Падшего короля", "Тройственный союз", "Испытание Стерака", "Танец смерти", "Ангел-хранитель"] }]
+            },
+            {
+                id: "yone",
+                name: "Ёнэ",
+                enName: "Yone",
+                title: "Незабытый",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Yone.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Гибридный Крит", items: ["Арбалет бессмертия", "Грань бесконечности", "Танец смерти", "Ангел-хранитель", "Облачение духов"] }]
+            },
+            {
+                id: "camille",
+                name: "Камилла",
+                enName: "Camille",
+                title: "Стальная тень",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "true",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Camille.png",
+                strongAgainst: [],
+                weakAgainst: ["Джакс", "Гвен"],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Точность" },
+                builds: [{ name: "Чистый Урон Сплитер", items: ["Тройственный союз", "Гидра", "Испытание Стерака", "Танец смерти", "Ангел-хранитель"] }]
+            },
+            {
+                id: "kennen",
+                name: "Кеннен",
+                enName: "Kennen",
+                title: "Сердце бури",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Kennen.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Казнь электричеством", primary: "Доминирование", secondary: "Вдохновение" },
+                builds: [{ name: "Командный AP Тимфайтер", items: ["Ночной жнец", "Песочные часы Жоньей", "Шляпа Рабадона", "Посох Бездна", "Сфера бесконечности"] }]
+            },
+            {
+                id: "ksante",
+                name: "К'Санте",
+                enName: "KSante",
+                title: "Заступник Назумы",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/KSante.png",
+                strongAgainst: [],
+                weakAgainst: ["Поппи", "Гнар", "Амбесса", "Вейн", "Рамбл"],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Точность" },
+                builds: [{ name: "Танк / Ассасин", items: ["Хладорожденная рукавица", "Сила природы", "Шипованный доспех", "Эгида солнечного пламени", "Ангел-хранитель"] }]
+            },
+            {
+                id: "malphite",
+                name: "Мальфит",
+                enName: "Malphite",
+                title: "Осколок Монолита",
+                role: "TOP",
+                tier: "S+ Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Malphite.png",
+                strongAgainst: [],
+                weakAgainst: ["Чо'Гат", "Доктор Мундо", "Сион"],
+                runes: { keystone: "Магическая комета", primary: "Колдовство", secondary: "Храбрость" },
+                builds: [{ name: "Анти-AD Танк", items: ["Хладорожденная рукавица", "Шипованный доспех", "Эгида солнечного пламени", "Доспех Вармога", "Маска пустоты"] }]
+            },
+            {
+                id: "maokai",
+                name: "Маокай",
+                enName: "Maokai",
+                title: "Темный энт",
+                role: "TOP",
+                tier: "B Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Maokai.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Дрожь земли", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Контролирующий Танк", items: ["Эгида солнечного пламени", "Облачение духов", "Шипованный доспех", "Маска пустоты", "Доспех Вармога"] }]
+            },
+            {
+                id: "mordekaiser",
+                name: "Мордекайзер",
+                enName: "Mordekaiser",
+                title: "Железный призрак",
+                role: "TOP",
+                tier: "S+ Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Mordekaiser.png",
+                strongAgainst: [],
+                weakAgainst: ["Амбесса", "Олаф", "Фиора", "Варвик"],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Джаггернаут Джаггернаутов", items: ["Творец разлома", "Хрустальный скипетр Рилай", "Песочные часы Жоньей", "Облачение духов", "Шипованный доспех"] }]
+            },
+            {
+                id: "nautilus",
+                name: "Наутилус",
+                enName: "Nautilus",
+                title: "Титан глубин",
+                role: "TOP",
+                tier: "B Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Nautilus.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Дрожь земли", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Контроль Танк", items: ["Эгида солнечного пламени", "Хладорожденная рукавица", "Шипованный доспех", "Облачение духов", "Доспех Вармога"] }]
+            },
+            {
+                id: "olaf",
+                name: "Олаф",
+                enName: "Olaf",
+                title: "Берсерк",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Olaf.png",
+                strongAgainst: ["Мордекайзер"],
+                weakAgainst: ["Фиора", "Волибир"],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Игнор Контроля", items: ["Божественный сокрушитель", "Танец смерти", "Испытание Стерака", "Облачение духов", "Ангел-хранитель"] }]
+            },
+            {
+                id: "ornn",
+                name: "Орн",
+                enName: "Ornn",
+                title: "Пламя гор",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Ornn.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Орн Кузнец Танк", items: ["Эгида солнечного пламени", "Маска пустоты", "Шипованный доспех", "Доспех Вармога", "Сила природы"] }]
+            },
+            {
+                id: "pantheon",
+                name: "Пантеон",
+                enName: "Pantheon",
+                title: "Несокрушимое копье",
+                role: "TOP",
+                tier: "B Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Pantheon.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Решительное наступление", primary: "Точность", secondary: "Доминирование" },
+                builds: [{ name: "Бурст Брузер", items: ["Черная секира", "Тройственный союз", "Танец смерти", "Змеиный клык", "Ангел-хранитель"] }]
+            },
+            {
+                id: "poppy",
+                name: "Поппи",
+                enName: "Poppy",
+                title: "Хранительница молота",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Poppy.png",
+                strongAgainst: [],
+                weakAgainst: ["Фиора", "Гвен", "Доктор Мундо", "Рамбл", "Дариус", "Мордекайзер"],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Танк Контроль", items: ["Эгида солнечного пламени", "Хладорожденная рукавица", "Шипованный доспех", "Облачение духов", "Доспех Вармога"] }]
+            },
+            {
+                id: "rumble",
+                name: "Рамбл",
+                enName: "Rumble",
+                title: "Механизированная угроза",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Rumble.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Магическая комета", primary: "Колдовство", secondary: "Вдохновение" },
+                builds: [{ name: "AP Огнемет", items: ["Мучения Лиандри", "Творец разлома", "Песочные часы Жоньей", "Шляпа Рабадона", "Посох Бездна"] }]
+            },
+            {
+                id: "riven",
+                name: "Ривен",
+                enName: "Riven",
+                title: "Изгнанница",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Riven.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Мобильный Бурст", items: ["Черная секира", "Расколотая небесная твердь", "Танец смерти", "Испытание Стерака", "Ангел-хранитель"] }]
+            },
+            {
+                id: "renekton",
+                name: "Ренектон",
+                enName: "Renekton",
+                title: "Мясник из песчаных земель",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Renekton.png",
+                strongAgainst: [],
+                weakAgainst: ["Варвик", "Джейс", "Волибир"],
+                runes: { keystone: "Решительное наступление", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Ранняя Доминация", items: ["Черная секира", "Сокрушитель", "Танец смерти", "Испытание Стерака", "Ангел-хранитель"] }]
+            },
+            {
+                id: "sett",
+                name: "Сетт",
+                enName: "Sett",
+                title: "Босс",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Sett.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Макс W Урон", items: ["Сокрушитель", "Испытание Стерака", "Черная секира", "Броня мертвеца", "Ангел-хранитель"] }]
+            },
+            {
+                id: "singed",
+                name: "Синджед",
+                enName: "Singed",
+                title: "Безумный химик",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Singed.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Вдохновение" },
+                builds: [{ name: "AP Ядовитый Танк", items: ["Мучения Лиандри", "Хрустальный скипетр Рилай", "Броня мертвеца", "Сила природы", "Облачение духов"] }]
+            },
+            {
+                id: "sion",
+                name: "Сион",
+                enName: "Sion",
+                title: "Восставший колосс",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Sion.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Гипер Танк / Пушер", items: ["Стальное сердце", "Эгида солнечного пламени", "Шипованный доспех", "Титаническая гидра", "Облачение духов"] }]
+            },
+            {
+                id: "teemo",
+                name: "Тимо",
+                enName: "Teemo",
+                title: "Шустрый скаут",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Teemo.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Казнь электричеством", primary: "Доминирование", secondary: "Вдохновение" },
+                builds: [{ name: "AP Грибник", items: ["Мучения Лиандри", "Зуб Нашора", "Шляпа Рабадона", "Посох Бездна", "Сфера бесконечности"] }]
+            },
+            {
+                id: "tryndamere",
+                name: "Триндамир",
+                enName: "Tryndamere",
+                title: "Король варваров",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Tryndamere.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "100% Крит Сплитер", items: ["Заколдованный клинок", "Грань бесконечности", "Арбалет бессмертия", "Затанцованный клинок", "Ангел-хранитель"] }]
+            },
+            {
+                id: "fiora",
+                name: "Фиора",
+                enName: "Fiora",
+                title: "Дуэлянт",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "true",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Fiora.png",
+                strongAgainst: ["Мордекайзер"],
+                weakAgainst: [],
+                runes: { keystone: "Завоеватель", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Дуэлянт Сплитпуш", items: ["Божественный сокрушитель", "Ненасытная гидра", "Испытание Стерака", "Танец смерти", "Ангел-хранитель"] }]
+            },
+            {
+                id: "cho gath",
+                name: "Чо'Гат",
+                enName: "Cho'Gath",
+                title: "Ужас Бездны",
+                role: "TOP",
+                tier: "S Tier",
+                damageType: "magical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Chogath.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "HP Танк / Чистый Урон", items: ["Стальное сердце", "Эгида солнечного пламени", "Облачение духов", "Шипованный доспех", "Доспех Вармога"] }]
+            },
+            {
+                id: "shen",
+                name: "Шен",
+                enName: "Shen",
+                title: "Око гармонии",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "mixed",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Shen.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Хватка нежити", primary: "Храбрость", secondary: "Вдохновение" },
+                builds: [{ name: "Танк / Ультимейт Поддержка", items: ["Эгида солнечного пламени", "Хладорожденная рукавица", "Облачение духов", "Шипованный доспех", "Доспех Вармога"] }]
+            },
+            {
+                id: "yasuo",
+                name: "Ясуо",
+                enName: "Yasuo",
+                title: "Прощенный",
+                role: "TOP",
+                tier: "A Tier",
+                damageType: "physical",
+                avatar: "https://ddragon.leagueoflegends.com/cdn/14.23.1/img/champion/Yasuo.png",
+                strongAgainst: [],
+                weakAgainst: [],
+                runes: { keystone: "Смертельный темп", primary: "Точность", secondary: "Храбрость" },
+                builds: [{ name: "Крит Гибрид", items: ["Арбалет бессмертия", "Грань бесконечности", "Танец смерти", "Ангел-хранитель", "Облачение духов"] }]
+            }
+        ];
+
+        const championsList = INITIAL_CHAMPIONS;
+
+        // Карта детального распределения типов урона для модального окна
+        const DAMAGE_COMPONENTS_MAP = {
+            gwen: ["magical", "true"],
+            aatrox: ["physical"],
+            akali: ["magical"],
+            ambessa: ["physical"],
+            warwick: ["physical", "magical"],
+            vayne: ["physical", "true"],
+            vladimir: ["magical"],
+            volibear: ["physical", "magical"],
+            wukong: ["physical"],
+            garen: ["physical", "true"],
+            gnar: ["physical", "magical"],
+            gragas: ["magical"],
+            graves: ["physical"],
+            darius: ["physical", "true"],
+            jax: ["physical", "magical"],
+            jayce: ["physical", "magical"],
+            dr_mundo: ["magical", "physical"],
+            irelia: ["physical", "magical"],
+            yone: ["physical", "magical", "true"],
+            camille: ["physical", "true"],
+            kennen: ["magical"],
+            ksante: ["physical", "magical", "true"],
+            malphite: ["magical", "physical"],
+            maokai: ["magical"],
+            mordekaiser: ["magical"],
+            nautilus: ["magical"],
+            olaf: ["physical", "true"],
+            ornn: ["physical", "magical"],
+            pantheon: ["physical"],
+            poppy: ["physical", "magical"],
+            rumble: ["magical"],
+            riven: ["physical"],
+            renekton: ["physical"],
+            sett: ["physical", "true"],
+            singed: ["magical"],
+            sion: ["physical", "magical"],
+            teemo: ["magical"],
+            tryndamere: ["physical"],
+            fiora: ["physical", "true"],
+            "cho gath": ["magical", "true"],
+            shen: ["magical", "physical"],
+            yasuo: ["physical"]
+        };
+
+        let selectedChampId = null;
+
+        function syncAndValidateMatchups() {
+            championsList.forEach(c => {
+                if (!c.strongAgainst) c.strongAgainst = [];
+                if (!c.weakAgainst) c.weakAgainst = [];
+            });
+
+            // 1. Remove internal mutual contradictions (in case champion is in both lists)
+            championsList.forEach(c => {
+                c.strongAgainst = c.strongAgainst.filter(enemy => !c.weakAgainst.includes(enemy));
+            });
+
+            // 2. Synchronize cross-champion lists
+            championsList.forEach(champ => {
+                champ.strongAgainst.forEach(enemyName => {
+                    const enemyObj = championsList.find(e => e.name.toLowerCase() === enemyName.toLowerCase());
+                    if (enemyObj) {
+                        enemyObj.strongAgainst = enemyObj.strongAgainst.filter(n => n.toLowerCase() !== champ.name.toLowerCase());
+                        if (!enemyObj.weakAgainst.some(n => n.toLowerCase() === champ.name.toLowerCase())) {
+                            enemyObj.weakAgainst.push(champ.name);
+                        }
+                    }
+                });
+
+                champ.weakAgainst.forEach(enemyName => {
+                    const enemyObj = championsList.find(e => e.name.toLowerCase() === enemyName.toLowerCase());
+                    if (enemyObj) {
+                        enemyObj.weakAgainst = enemyObj.weakAgainst.filter(n => n.toLowerCase() !== champ.name.toLowerCase());
+                        if (!enemyObj.strongAgainst.some(n => n.toLowerCase() === champ.name.toLowerCase())) {
+                            enemyObj.strongAgainst.push(champ.name);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Clean SVG placeholder generator
+        function generateAvatarFallback(name) {
+            const char = name ? name.trim().charAt(0).toUpperCase() : '?';
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0f172a"/><text x="50" y="55" font-family="sans-serif" font-size="42" font-weight="bold" fill="#c8aa6e" text-anchor="middle" dominant-baseline="middle">${char}</text></svg>`;
+            return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+        }
+
+        function getDamageBadge(type) {
+            switch(type) {
+                case 'physical':
+                    return `<span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded text-[11px] font-bold"><i class="fa-solid fa-sword text-xs"></i> Физ. урон</span>`;
+                case 'magical':
+                    return `<span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 px-2 py-0.5 rounded text-[11px] font-bold"><i class="fa-solid fa-wand-magic-sparkles text-xs"></i> Маг. урон</span>`;
+                case 'true':
+                    return `<span class="bg-slate-200/20 text-slate-100 border border-slate-300/40 px-2 py-0.5 rounded text-[11px] font-bold"><i class="fa-solid fa-bolt text-xs"></i> Чистый урон</span>`;
+                case 'mixed':
+                    return `<span class="bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded text-[11px] font-bold"><i class="fa-solid fa-layer-group text-xs"></i> Смешанный</span>`;
+                default:
+                    return '';
+            }
+        }
+
+        // Возвращает комплексные бэджи всех типов урона для детального окна
+        function getDetailedDamageBadges(champ) {
+            const components = champ.damageComponents || DAMAGE_COMPONENTS_MAP[champ.id] || [champ.damageType];
+            return components.map(type => getDamageBadge(type)).join('');
+        }
+
+        function initSingleView() {
+            renderChampionChips(championsList);
+        }
+
+        function filterChampionSelectDropdown() {
+            const query = document.getElementById('singleChampSearch').value.toLowerCase().trim();
+            const filtered = championsList.filter(c => c.name.toLowerCase().includes(query) || c.enName.toLowerCase().includes(query));
+            renderChampionChips(filtered);
+        }
+
+        function renderChampionChips(list) {
+            const container = document.getElementById('champChipList');
+            if (list.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 italic py-2">Герой не найден</p>`;
+                return;
+            }
+
+            container.innerHTML = list.map(c => `
+                <button onclick="selectSingleChampion('${c.id}')" 
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition border ${selectedChampId === c.id ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md' : 'bg-slate-900/90 text-slate-300 border-slate-800 hover:border-amber-500/50 hover:text-white'}">
+                    <img src="${c.avatar}" onerror="this.onerror=null;this.src='${generateAvatarFallback(c.name)}';" class="w-5 h-5 rounded-full object-cover">
+                    <span>${c.name}</span>
+                </button>
+            `).join('');
+        }
+
+        function selectSingleChampion(id) {
+            selectedChampId = id;
+            const champ = championsList.find(c => c.id === id);
+            if (!champ) return;
+
+            renderChampionChips(championsList);
+
+            document.getElementById('singleEmptyPrompt').classList.add('hidden');
+            document.getElementById('selectedChampDashboard').classList.remove('hidden');
+
+            const banner = document.getElementById('heroCardBanner');
+            banner.innerHTML = `
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+                    <div class="flex items-center gap-4 text-center md:text-left flex-col md:flex-row">
+                        <img src="${champ.avatar}" onerror="this.onerror=null;this.src='${generateAvatarFallback(champ.name)}';" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl border-2 border-amber-500/60 object-cover shadow-xl shadow-amber-500/10">
+                        <div>
+                            <div class="flex items-center justify-center md:justify-start gap-2 flex-wrap">
+                                <h2 class="text-2xl sm:text-3xl font-black text-white">${champ.name}</h2>
+                                <span class="px-2.5 py-0.5 rounded-md text-xs font-extrabold bg-amber-500/20 text-amber-300 border border-amber-500/30">${champ.tier}</span>
+                                ${getDamageBadge(champ.damageType)}
+                            </div>
+                            <p class="text-xs text-slate-400 mt-1 italic">${champ.title}</p>
+                        </div>
+                    </div>
+                    <button onclick="openDetailModal('${champ.id}')" class="px-4 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/40 text-amber-300 font-extrabold text-xs transition flex items-center gap-2">
+                        <i class="fa-solid fa-gem"></i> Полная сборка и руны
+                    </button>
+                </div>
+            `;
+
+            // Render Weak Against
+            const weakContainer = document.getElementById('weakAgainstList');
+            document.getElementById('weakCount').textContent = `${champ.weakAgainst.length} врагов`;
+
+            if (champ.weakAgainst.length === 0) {
+                weakContainer.innerHTML = `<p class="col-span-full text-xs text-amber-400/80 italic py-3 text-center bg-slate-950/50 rounded-xl border border-slate-800"><i class="fa-solid fa-pen-to-square mr-1.5"></i> Список контрпиков очищен. Назовите первых оппонентов для переписывания!</p>`;
+            } else {
+                weakContainer.innerHTML = champ.weakAgainst.map(enemyName => {
+                    const matchedObj = championsList.find(c => c.name.toLowerCase() === enemyName.toLowerCase());
+                    const avatarSrc = matchedObj ? matchedObj.avatar : generateAvatarFallback(enemyName);
+                    const clickAttr = matchedObj ? `onclick="selectSingleChampion('${matchedObj.id}')"` : '';
+                    const cursorClass = matchedObj ? 'cursor-pointer hover:border-rose-500/60 hover:bg-slate-900/90' : '';
+                    return `
+                        <div ${clickAttr} class="flex items-center justify-between p-3 rounded-xl bg-slate-950/70 border border-rose-500/20 transition ${cursorClass}">
+                            <div class="flex items-center gap-3">
+                                <img src="${avatarSrc}" onerror="this.onerror=null;this.src='${generateAvatarFallback(enemyName)}';" class="w-9 h-9 rounded-lg object-cover border border-rose-500/30">
+                                <span class="text-xs font-bold text-white">${enemyName}</span>
+                            </div>
+                            ${matchedObj ? `
+                                <button onclick="event.stopPropagation(); openDetailModal('${matchedObj.id}')" title="Информация о чемпионе" class="text-slate-400 hover:text-amber-400 text-xs p-1.5 rounded-lg hover:bg-slate-800 transition">
+                                    <i class="fa-solid fa-info-circle"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function populateVersusDropdowns() {
+            const sel1 = document.getElementById('versusChamp1');
+            const sel2 = document.getElementById('versusChamp2');
+
+            const val1 = sel1.value;
+            const val2 = sel2.value;
+
+            const sorted = [...championsList].sort((a,b) => a.name.localeCompare(b.name, 'ru'));
+
+            const optionsHTML = `<option value="">-- Выберите героя --</option>` + sorted.map(c => `
+                <option value="${c.id}">${c.name} (${c.tier})</option>
+            `).join('');
+
+            sel1.innerHTML = optionsHTML;
+            sel2.innerHTML = optionsHTML;
+
+            sel1.value = val1;
+            sel2.value = val2;
+        }
+
+        function swapVersusChamps() {
+            const sel1 = document.getElementById('versusChamp1');
+            const sel2 = document.getElementById('versusChamp2');
+            const temp = sel1.value;
+            sel1.value = sel2.value;
+            sel2.value = temp;
+            calculateVersusMatchup();
+        }
+
+        function calculateVersusMatchup() {
+            const id1 = document.getElementById('versusChamp1').value;
+            const id2 = document.getElementById('versusChamp2').value;
+
+            const prev1 = document.getElementById('versusPreview1');
+            const prev2 = document.getElementById('versusPreview2');
+            const resultBox = document.getElementById('versusResultBox');
+
+            if (!id1) {
+                prev1.classList.add('hidden');
+            } else {
+                const c1 = championsList.find(c => c.id === id1);
+                prev1.innerHTML = `
+                    <img src="${c1.avatar}" onerror="this.onerror=null;this.src='${generateAvatarFallback(c1.name)}';" class="w-16 h-16 mx-auto rounded-xl border border-teal-500/50 mb-2 object-cover">
+                    <h4 class="font-bold text-white text-sm">${c1.name}</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">${c1.title}</p>
+                    <div class="mt-2 flex items-center justify-center gap-2">
+                        ${getDamageBadge(c1.damageType)}
+                    </div>
+                `;
+                prev1.classList.remove('hidden');
+            }
+
+            if (!id2) {
+                prev2.classList.add('hidden');
+            } else {
+                const c2 = championsList.find(c => c.id === id2);
+                prev2.innerHTML = `
+                    <img src="${c2.avatar}" onerror="this.onerror=null;this.src='${generateAvatarFallback(c2.name)}';" class="w-16 h-16 mx-auto rounded-xl border border-rose-500/50 mb-2 object-cover">
+                    <h4 class="font-bold text-white text-sm">${c2.name}</h4>
+                    <p class="text-xs text-slate-400 mt-0.5">${c2.title}</p>
+                    <div class="mt-2 flex items-center justify-center gap-2">
+                        ${getDamageBadge(c2.damageType)}
+                    </div>
+                `;
+                prev2.classList.remove('hidden');
+            }
+
+            if (!id1 || !id2) {
+                resultBox.classList.add('hidden');
+                return;
+            }
+
+            if (id1 === id2) {
+                resultBox.className = "glass-panel rounded-2xl p-6 border-2 border-amber-500/40 text-center";
+                resultBox.innerHTML = `<p class="text-amber-400 font-bold text-sm">Выберите двух разных персонажей для симуляции!</p>`;
+                resultBox.classList.remove('hidden');
+                return;
+            }
+
+            const c1 = championsList.find(c => c.id === id1);
+            const c2 = championsList.find(c => c.id === id2);
+
+            const isC1CountersC2 = c1.strongAgainst.some(name => name.toLowerCase() === c2.name.toLowerCase());
+            const isC2CountersC1 = c2.strongAgainst.some(name => name.toLowerCase() === c1.name.toLowerCase());
+
+            let status = 'SKILL'; // WIN, LOSE, SKILL
+
+            if (isC1CountersC2) {
+                status = 'WIN';
+            } else if (isC2CountersC1) {
+                status = 'LOSE';
+            }
+
+            resultBox.classList.remove('hidden');
+
+            if (status === 'WIN') {
+                resultBox.className = "glass-panel rounded-2xl p-6 border-2 border-emerald-500/50 bg-emerald-950/20 text-center shadow-xl shadow-emerald-500/10";
+                resultBox.innerHTML = `
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-black text-xs uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-trophy"></i> ЛЕГКИЙ МАТЧАП / WIN
+                    </div>
+                    <h3 class="text-2xl font-black text-white">${c1.name} выигрывает линию против ${c2.name}</h3>
+                    <p class="text-xs text-slate-300 max-w-xl mx-auto mt-2">
+                        Персонаж <strong>${c1.name}</strong> обладает набором умений, позволяющим уверенно доминировать на линии против <strong>${c2.name}</strong>.
+                    </p>
+                `;
+            } else if (status === 'LOSE') {
+                resultBox.className = "glass-panel rounded-2xl p-6 border-2 border-rose-500/50 bg-rose-950/20 text-center shadow-xl shadow-rose-500/10";
+                resultBox.innerHTML = `
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 font-black text-xs uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-triangle-exclamation"></i> ТЯЖЕЛЫЙ МАТЧАП / LOSE
+                    </div>
+                    <h3 class="text-2xl font-black text-white">${c1.name} проигрывает линию против ${c2.name}</h3>
+                    <p class="text-xs text-slate-300 max-w-xl mx-auto mt-2">
+                        <strong>${c2.name}</strong> является прямым контрпиком для <strong>${c1.name}</strong>. Требуется осторожная игра и помощь лесника.
+                    </p>
+                `;
+            } else {
+                resultBox.className = "glass-panel rounded-2xl p-6 border-2 border-amber-500/50 bg-amber-950/20 text-center shadow-xl shadow-amber-500/10";
+                resultBox.innerHTML = `
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-black text-xs uppercase tracking-wider mb-3">
+                        <i class="fa-solid fa-scale-balanced"></i> SKILL MATCHUP
+                    </div>
+                    <h3 class="text-2xl font-black text-white">Равный матч между ${c1.name} и ${c2.name}</h3>
+                    <p class="text-xs text-slate-300 max-w-xl mx-auto mt-2">
+                        Победа на линии полностью зависит от личного навыка, микроконтроля и правильного менеджмента волн миньонов.
+                    </p>
+                `;
+            }
+        }
+
+        function renderTierList() {
+            const container = document.getElementById('tierListContainer');
+            const tierFilter = document.getElementById('tierFilterOption').value;
+            const damageFilter = document.getElementById('damageFilterOption').value;
+            const sortOption = document.getElementById('tierSortOption').value;
+
+            let filtered = championsList.filter(c => {
+                const matchTier = tierFilter === 'ALL' || c.tier === tierFilter;
+                const matchDamage = damageFilter === 'ALL' || c.damageType === damageFilter;
+                return matchTier && matchDamage;
+            });
+
+            if (sortOption === 'name') {
+                filtered.sort((a,b) => a.name.localeCompare(b.name, 'ru'));
+            }
+
+            const tiersOrder = ["S+ Tier", "S Tier", "A Tier", "B Tier"];
+            
+            container.innerHTML = tiersOrder.map(tierName => {
+                if (tierFilter !== 'ALL' && tierFilter !== tierName) return '';
+
+                const champsInTier = filtered.filter(c => c.tier === tierName);
+                if (champsInTier.length === 0) return '';
+
+                let badgeColor = "bg-amber-500/20 text-amber-300 border-amber-500/40";
+                if (tierName === "S+ Tier") badgeColor = "bg-rose-500/20 text-rose-300 border-rose-500/40";
+                if (tierName === "S Tier") badgeColor = "bg-amber-500/20 text-amber-300 border-amber-500/40";
+                if (tierName === "A Tier") badgeColor = "bg-teal-500/20 text-teal-300 border-teal-500/40";
+                if (tierName === "B Tier") badgeColor = "bg-slate-500/20 text-slate-300 border-slate-500/40";
+
+                return `
+                    <div class="glass-panel rounded-2xl p-5 border border-slate-800">
+                        <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-800">
+                            <span class="px-3 py-1 rounded-xl text-sm font-black border ${badgeColor}">${tierName}</span>
+                            <span class="text-xs text-slate-400 font-bold">(${champsInTier.length} героев)</span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            ${champsInTier.map(c => `
+                                <div onclick="openDetailModal('${c.id}')" class="bg-slate-950/80 border border-slate-800 hover:border-amber-500/50 p-3 rounded-xl flex items-center gap-3 cursor-pointer transition">
+                                    <img src="${c.avatar}" onerror="this.onerror=null;this.src='${generateAvatarFallback(c.name)}';" class="w-12 h-12 rounded-xl object-cover border border-slate-700">
+                                    <div class="overflow-hidden">
+                                        <h4 class="font-bold text-white text-sm truncate">${c.name}</h4>
+                                        <div class="mt-1">${getDamageBadge(c.damageType)}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openDetailModal(champId) {
+            const champ = championsList.find(c => c.id === champId);
+            if (!champ) return;
+
+            document.getElementById('detailAvatar').src = champ.avatar;
+            document.getElementById('detailName').textContent = champ.name;
+            document.getElementById('detailTier').textContent = champ.tier;
+            document.getElementById('detailTitle').textContent = champ.title;
+            document.getElementById('detailDamageBadge').innerHTML = getDetailedDamageBadges(champ);
+
+
+            // Strong Against Modal List
+            const strongBox = document.getElementById('detailStrongAgainst');
+            if (champ.strongAgainst.length === 0) {
+                strongBox.innerHTML = `<span class="text-xs text-slate-500 italic">Специфические жертвы отсутствуют</span>`;
+            } else {
+                strongBox.innerHTML = champ.strongAgainst.map(s => {
+                    const matchedObj = championsList.find(c => c.name.toLowerCase() === s.toLowerCase());
+                    return matchedObj 
+                        ? `<button onclick="closeDetailModal(); selectSingleChampion('${matchedObj.id}'); switchMainTab('single');" class="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/30 text-xs font-bold transition cursor-pointer">${s}</button>`
+                        : `<span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 text-xs font-bold">${s}</span>`;
+                }).join('');
+            }
+
+            // Weak Against Modal List
+            const weakBox = document.getElementById('detailWeakAgainst');
+            if (champ.weakAgainst.length === 0) {
+                weakBox.innerHTML = `<span class="text-xs text-slate-500 italic">Прямых контрпиков нет</span>`;
+            } else {
+                weakBox.innerHTML = champ.weakAgainst.map(w => {
+                    const matchedObj = championsList.find(c => c.name.toLowerCase() === w.toLowerCase());
+                    return matchedObj 
+                        ? `<button onclick="closeDetailModal(); selectSingleChampion('${matchedObj.id}'); switchMainTab('single');" class="px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs font-bold transition cursor-pointer">${w}</button>`
+                        : `<span class="px-2.5 py-1 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs font-bold">${w}</span>`;
+                }).join('');
+            }
+
+            // Runes
+            document.getElementById('detailRunesContainer').innerHTML = `
+                <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-center">
+                    <span class="text-[10px] text-slate-400 uppercase font-extrabold block mb-1">Главная руна</span>
+                    <span class="text-xs font-bold text-amber-300">${champ.runes.keystone}</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-center">
+                    <span class="text-[10px] text-slate-400 uppercase font-extrabold block mb-1">Основная ветка</span>
+                    <span class="text-xs font-bold text-white">${champ.runes.primary}</span>
+                </div>
+                <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 text-center">
+                    <span class="text-[10px] text-slate-400 uppercase font-extrabold block mb-1">Вторичная ветка</span>
+                    <span class="text-xs font-bold text-white">${champ.runes.secondary}</span>
+                </div>
+            `;
+
+            // Build Items
+            const build = champ.builds[0];
+            document.getElementById('buildItemsDisplay').innerHTML = `
+                <p class="text-xs font-bold text-amber-300 mb-2">${build.name}:</p>
+                <div class="flex flex-wrap gap-2">
+                    ${build.items.map((item, idx) => `
+                        <div class="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs font-medium text-slate-200">
+                            <span class="text-[10px] text-amber-400 font-bold">#${idx+1}</span>
+                            <span>${item}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            document.getElementById('detailModal').classList.remove('hidden');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+        }
+
+        function switchMainTab(tabName) {
+            const views = {
+                single: document.getElementById('viewSingle'),
+                versus: document.getElementById('viewVersus'),
+                tierlist: document.getElementById('viewTierlist')
+            };
+
+            const desktopBtns = {
+                single: document.getElementById('tabBtnSingle'),
+                versus: document.getElementById('tabBtnVersus'),
+                tierlist: document.getElementById('tabBtnTier')
+            };
+
+            const mobBtns = {
+                single: document.getElementById('mobTabSingle'),
+                versus: document.getElementById('mobTabVersus'),
+                tierlist: document.getElementById('mobTabTier')
+            };
+
+            // Toggle visibility of views
+            Object.keys(views).forEach(key => {
+                if (views[key]) {
+                    if (key === tabName) {
+                        views[key].classList.remove('hidden');
+                    } else {
+                        views[key].classList.add('hidden');
+                    }
+                }
+            });
+
+            // Active / Inactive classes for desktop
+            const activeDesktopClass = 'px-4 py-2 rounded-lg text-xs font-extrabold transition flex items-center gap-2 bg-amber-500 text-slate-950 shadow-md';
+            const inactiveDesktopClass = 'px-4 py-2 rounded-lg text-xs font-extrabold transition flex items-center gap-2 text-slate-400 hover:text-amber-300';
+
+            Object.keys(desktopBtns).forEach(key => {
+                if (desktopBtns[key]) {
+                    desktopBtns[key].className = (key === tabName) ? activeDesktopClass : inactiveDesktopClass;
+                }
+            });
+
+            // Active / Inactive classes for mobile
+            const activeMobClass = 'p-2 bg-amber-500/20 text-amber-300 rounded-lg text-xs font-bold border border-amber-500/40';
+            const inactiveMobClass = 'p-2 bg-slate-800 text-slate-300 rounded-lg text-xs font-bold border border-slate-700';
+
+            Object.keys(mobBtns).forEach(key => {
+                if (mobBtns[key]) {
+                    mobBtns[key].className = (key === tabName) ? activeMobClass : inactiveMobClass;
+                }
+            });
+
+            // Trigger specific tab renders
+            if (tabName === 'tierlist') {
+                renderTierList();
+            } else if (tabName === 'versus') {
+                populateVersusDropdowns();
+            }
+        }
+
+        window.onload = function() {
+            syncAndValidateMatchups();
+            initSingleView();
+            populateVersusDropdowns();
+        };
+    </script>
+</body>
+</html>
